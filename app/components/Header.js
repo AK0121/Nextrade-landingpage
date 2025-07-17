@@ -4,6 +4,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { X, Menu } from "lucide-react";
 import Link from "next/link";
 import { useState, useEffect } from "react";
+import Image from "next/image";
 
 export default function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -11,13 +12,7 @@ export default function Header() {
 
   useEffect(() => {
     const handleScroll = () => {
-      const sections = [
-        "hero",
-        "features",
-        "services",
-        "why-choose",
-        "contact",
-      ];
+      const sections = ["hero", "features", "faq", "highlight", "contact"];
       const current = sections.find((section) => {
         const element = document.getElementById(section);
         if (element) {
@@ -43,8 +38,8 @@ export default function Header() {
 
   const navItems = [
     { id: "features", label: "Features" },
-    { id: "services", label: "Services" },
-    { id: "why-choose", label: "Why Choose Us" },
+    { id: "faq", label: "FAQ" },
+    { id: "highlight", label: "Highlights" },
   ];
   return (
     <nav className="fixed top-0 w-full bg-white/80 backdrop-blur-lg z-50 border-b border-blue-100">
@@ -101,27 +96,43 @@ export default function Header() {
       <AnimatePresence>
         {isMenuOpen && (
           <motion.div
-            initial={{ opacity: 0, height: 0 }}
-            animate={{ opacity: 1, height: "auto" }}
-            exit={{ opacity: 0, height: 0 }}
-            className="md:hidden bg-white border-t border-blue-100"
+            initial={{ opacity: 0, y: "-100%" }}
+            animate={{ opacity: 1, y: "0" }}
+            exit={{ opacity: 0, y: "-100%" }}
+            className="md:hidden h-screen w-full bg-gradient-to-b from-white to-blue-100 absolute top-[4.1rem] left-0 z-50"
           >
-            <div className="px-4 py-2 space-y-2">
+            <div className="flex flex-col items-center gap-4 py-4">
               {navItems.map((item) => (
                 <button
                   key={item.id}
                   onClick={() => scrollToSection(item.id)}
-                  className="block w-full text-left py-2 text-gray-700 hover:text-blue-600 cursor-pointer"
+                  className="block w-full py-2 text-gray-700 hover:text-blue-600 cursor-pointer text-2xl"
                 >
                   {item.label}
                 </button>
               ))}
               <Link
                 href="/contact"
-                className="w-full bg-blue-600 text-white py-2 rounded-lg mt-4 cursor-pointer"
+                className="w-7/12 mx-auto text-center bg-blue-600 text-white text-xl p-4 rounded-lg mt-4 cursor-pointer"
               >
                 Contact Us
               </Link>
+              <motion.div
+                animate={{ y: [0, -30, 0] }}
+                transition={{
+                  duration: 4,
+                  repeat: Infinity,
+                  ease: "easeInOut",
+                }}
+              >
+                <Image
+                  src="/nav-image.svg"
+                  alt="Nav Image"
+                  width={200}
+                  height={200}
+                  className="w-10/12 mx-auto mt-24"
+                />
+              </motion.div>
             </div>
           </motion.div>
         )}

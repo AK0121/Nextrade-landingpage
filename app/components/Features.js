@@ -64,7 +64,7 @@ const ResultsSection = () => {
           <h1 className="text-5xl md:text-6xl font-bold text-gray-900 leading-tight">
             Enjoy Maximum Profits with
           </h1>
-          <h1 className="text-5xl md:text-6xl font-bold text-gray-900 mb-6">
+          <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold text-gray-900 mb-6">
             <ColourfulText text="ZERO BROKERAGE" />
           </h1>
 

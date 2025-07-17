@@ -15,6 +15,7 @@ import Hero from "./components/Hero.js";
 import Image from "next/image.js";
 import Features from "./components/Features.js";
 import TradingHighlight from "./components/TradingHighlight.js";
+import FAQ from "./components/Faq.js";
 
 const Home = () => {
 
@@ -53,24 +54,6 @@ const Home = () => {
       content:
         "The most reliable trading platform we've ever used. Exceptional support team.",
       rating: 5,
-    },
-  ];
-
-  const faqs = [
-    {
-      question: "How secure is the Nextrade platform?",
-      answer:
-        "We use bank-grade encryption, multi-factor authentication, and are SOC 2 Type II compliant. Your data and transactions are protected by the highest security standards.",
-    },
-    {
-      question: "What's the typical implementation time?",
-      answer:
-        "Most clients are up and running within 2-4 weeks, depending on integration complexity. Our dedicated onboarding team ensures a smooth transition.",
-    },
-    {
-      question: "Do you offer custom integrations?",
-      answer:
-        "Yes, we provide full API access and custom integration services to seamlessly connect with your existing systems.",
     },
   ];
 
@@ -170,36 +153,10 @@ const Home = () => {
             ))}
           </div>
 
-          {/* FAQ */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className="mt-20"
-          >
-            <h3 className="text-3xl font-bold text-gray-900 text-center mb-12">
-              Frequently Asked Questions
-            </h3>
-            <div className="space-y-6 max-w-4xl mx-auto">
-              {faqs.map((faq, index) => (
-                <motion.div
-                  key={index}
-                  initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: index * 0.1 }}
-                  className="bg-gray-50 p-6 rounded-xl"
-                >
-                  <h4 className="text-xl font-semibold text-gray-900 mb-3">
-                    {faq.question}
-                  </h4>
-                  <p className="text-gray-600">{faq.answer}</p>
-                </motion.div>
-              ))}
-            </div>
-          </motion.div>
         </div>
       </section>
+          {/* FAQ */}
+         <FAQ />
 
       {/* Trading Highlight */}
       <TradingHighlight />
