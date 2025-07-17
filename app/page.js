@@ -66,7 +66,7 @@ const Home = () => {
 
       {/* Whatsapp Floating Button */}
       <a
-        href="https://wa.me/123456789"
+        href="https://wa.me/918503808810"
         target="_blank"
         rel="noopener noreferrer"
         className="fixed bottom-4 right-2 z-10"
@@ -180,78 +180,30 @@ const Home = () => {
             <div>
               <h4 className="text-lg font-semibold mb-4">Services</h4>
               <ul className="space-y-2 text-gray-400">
-                <li>
-                  <a href="#" className="hover:text-white transition-colors">
-                    Algorithmic Trading
-                  </a>
-                </li>
-                <li>
-                  <a href="#" className="hover:text-white transition-colors">
-                    Market Analytics
-                  </a>
-                </li>
-                <li>
-                  <a href="#" className="hover:text-white transition-colors">
-                    Risk Management
-                  </a>
-                </li>
-                <li>
-                  <a href="#" className="hover:text-white transition-colors">
-                    Portfolio Optimization
-                  </a>
-                </li>
+                <li>Algorithmic Trading</li>
+                <li>Market Analytics</li>
+                <li>Risk Management</li>
+                <li>Portfolio Optimization</li>
               </ul>
             </div>
 
             <div>
               <h4 className="text-lg font-semibold mb-4">Company</h4>
               <ul className="space-y-2 text-gray-400">
-                <li>
-                  <a href="#" className="hover:text-white transition-colors">
-                    About Us
-                  </a>
-                </li>
-                <li>
-                  <a href="#" className="hover:text-white transition-colors">
-                    Careers
-                  </a>
-                </li>
-                <li>
-                  <a href="#" className="hover:text-white transition-colors">
-                    Press
-                  </a>
-                </li>
-                <li>
-                  <a href="#" className="hover:text-white transition-colors">
-                    Contact
-                  </a>
-                </li>
+                <li>About Us</li>
+                <li>FAQ</li>
+                <li>Why Choose Nextrade</li>
+                <li>Features</li>
               </ul>
             </div>
 
             <div>
               <h4 className="text-lg font-semibold mb-4">Legal</h4>
               <ul className="space-y-2 text-gray-400">
-                <li>
-                  <a href="#" className="hover:text-white transition-colors">
-                    Privacy Policy
-                  </a>
-                </li>
-                <li>
-                  <a href="#" className="hover:text-white transition-colors">
-                    Terms of Service
-                  </a>
-                </li>
-                <li>
-                  <a href="#" className="hover:text-white transition-colors">
-                    Security
-                  </a>
-                </li>
-                <li>
-                  <a href="#" className="hover:text-white transition-colors">
-                    Compliance
-                  </a>
-                </li>
+                <li>Privacy Policy</li>
+                <li>Terms of Service</li>
+                <li>Security</li>
+                <li>Compliance</li>
               </ul>
             </div>
           </div>

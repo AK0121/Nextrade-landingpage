@@ -80,8 +80,8 @@ const FAQ = () => {
           {/* Image Section */}
           <div className="flex-1 flex justify-center lg:justify-end w-full min-h-[500px]">
             <Image
-              src="/faq-img.svg"
-              alt="faq-img"
+              src="/Faq-img.svg"
+              alt="FAQ-img"
               width={100}
               height={100}
               className="w-full max-w-sm lg:max-w-[40rem] object-contain"
@@ -180,7 +180,9 @@ const FAQ = () => {
             Still have questions? Our support team is here to help.
           </p>
           <a
-            href="#"
+            href="https://wa.me/918503808810"
+            target="_blank"
+            rel="noopener noreferrer"
             className="px-8 py-3 bg-gradient-to-r from-blue-600 to-slate-900 text-white font-semibold rounded-full hover:from-blue-700 hover:to-slate-800 transform hover:scale-105 transition-all duration-300 shadow-lg hover:shadow-xl"
           >
             Contact Support

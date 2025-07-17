@@ -171,15 +171,15 @@ export default function Contact() {
               <div className="space-y-4">
                 <div className="flex items-center space-x-4">
                   <Phone className="w-6 h-6 text-blue-200" />
-                  <span className="text-white">+1 (555) 123-4567</span>
+                  <span className="text-white">+91 8503808810</span>
                 </div>
                 <div className="flex items-center space-x-4">
                   <Mail className="w-6 h-6 text-blue-200" />
-                  <span className="text-white">contact@nextrade.com</span>
+                  <span className="text-white">nextrade@gmail.com</span>
                 </div>
                 <div className="flex items-center space-x-4">
                   <MapPin className="w-6 h-6 text-blue-200" />
-                  <span className="text-white">New York, NY 10001</span>
+                  <span className="text-white">India, Rajasthan</span>
                 </div>
               </div>
             </div>
@@ -216,7 +216,7 @@ export default function Contact() {
             className="bg-blue-900/10 backdrop-blur-md p-8 rounded-xl border border-white/20 shadow-2xl"
           >
             <h3 className="text-2xl font-bold text-white mb-6">
-              Start Your Free Trial
+              Start Your Trading Journey
             </h3>
             <form onSubmit={handleSubmit} className="space-y-6">
               <div className="grid md:grid-cols-2 gap-4">
