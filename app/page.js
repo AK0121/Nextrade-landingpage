@@ -1,103 +1,312 @@
-import Image from "next/image";
+"use client";
 
-export default function Home() {
+import {
+  motion,
+} from "framer-motion";
+import {
+  CheckCircle,
+  Star,
+  Award, 
+  Clock,
+  Globe,
+} from "lucide-react";
+import Header from "./components/Header.js"
+import Hero from "./components/Hero.js";
+import Image from "next/image.js";
+import Features from "./components/Features.js";
+import TradingHighlight from "./components/TradingHighlight.js";
+
+const Home = () => {
+
+  const whyChooseReasons = [
+    {
+      icon: <Award className="w-12 h-12" />,
+      title: "Industry Leader",
+      description: "Trusted by Fortune 500 companies worldwide",
+      stat: "500+ Companies",
+    },
+    {
+      icon: <Clock className="w-12 h-12" />,
+      title: "10+ Years Experience",
+      description: "Decade of proven success in financial technology",
+      stat: "Since 2014",
+    },
+    {
+      icon: <Globe className="w-12 h-12" />,
+      title: "Global Reach",
+      description: "Operating in 50+ countries with local support",
+      stat: "50+ Countries",
+    },
+  ];
+
+  const testimonials = [
+    {
+      name: "Sarah Johnson",
+      role: "CTO, FinanceFlow Inc.",
+      content:
+        "Nextrade transformed our trading operations. The ROI was immediate and substantial.",
+      rating: 5,
+    },
+    {
+      name: "Michael Chen",
+      role: "Investment Director, Capital Ventures",
+      content:
+        "The most reliable trading platform we've ever used. Exceptional support team.",
+      rating: 5,
+    },
+  ];
+
+  const faqs = [
+    {
+      question: "How secure is the Nextrade platform?",
+      answer:
+        "We use bank-grade encryption, multi-factor authentication, and are SOC 2 Type II compliant. Your data and transactions are protected by the highest security standards.",
+    },
+    {
+      question: "What's the typical implementation time?",
+      answer:
+        "Most clients are up and running within 2-4 weeks, depending on integration complexity. Our dedicated onboarding team ensures a smooth transition.",
+    },
+    {
+      question: "Do you offer custom integrations?",
+      answer:
+        "Yes, we provide full API access and custom integration services to seamlessly connect with your existing systems.",
+    },
+  ];
+
   return (
-    <div className="font-sans grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="font-mono list-inside list-decimal text-sm/6 text-center sm:text-left">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] font-mono font-semibold px-1 py-0.5 rounded">
-              app/page.js
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50">
+      {/* Navigation */}
+      <Header />
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+      {/* Hero Section */}
+      <Hero />
+
+      {/* Whatsapp Floating Button */}
+      <a
+        href="https://wa.me/123456789"
+        target="_blank"
+        rel="noopener noreferrer"
+        className="fixed bottom-4 right-2 z-10"
+      >
+          <Image
+            className="filter saturate-150 hover:scale-110 transition-all duration-75 ease-in-out"
+            src="/whatsapp-logo.png"
+            alt="Whatsapp"
+            width={55}
+            height={55}
+          />
+      </a>
+
+      {/* Features Section */}
+      <Features />
+
+      {/* Why Choose Nextrade */}
+      <section id="why-choose" className="py-20 bg-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="text-center mb-16"
           >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+            <h2 className="text-4xl font-bold text-gray-900 mb-4">
+              Why Choose Nextrade?
+            </h2>
+            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+              Join the thousands of traders who trust us with their success
+            </p>
+          </motion.div>
+
+          <div className="grid lg:grid-cols-3 gap-8 mb-16">
+            {whyChooseReasons.map((reason, index) => (
+              <motion.div
+                key={index}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: index * 0.1 }}
+                className="text-center p-8 bg-gradient-to-br from-blue-50 to-white rounded-xl shadow-md hover:shadow-lg transition-all duration-300"
+              >
+                <div className="text-blue-600 mb-4 flex justify-center">
+                  {reason.icon}
+                </div>
+                <h3 className="text-2xl font-bold text-gray-900 mb-2">
+                  {reason.title}
+                </h3>
+                <p className="text-gray-600 mb-4">{reason.description}</p>
+                <div className="text-3xl font-bold text-blue-600">
+                  {reason.stat}
+                </div>
+              </motion.div>
+            ))}
+          </div>
+
+          {/* Testimonials */}
+          <div className="grid lg:grid-cols-2 gap-8">
+            {testimonials.map((testimonial, index) => (
+              <motion.div
+                key={index}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: index * 0.1 }}
+                className="bg-gradient-to-br from-blue-600 to-blue-800 p-8 rounded-xl text-white"
+              >
+                <div className="flex mb-4">
+                  {[...Array(testimonial.rating)].map((_, i) => (
+                    <Star
+                      key={i}
+                      className="w-5 h-5 fill-current text-yellow-400"
+                    />
+                  ))}
+                </div>
+                <p className="text-lg mb-4 italic">"{testimonial.content}"</p>
+                <div>
+                  <div className="font-semibold">{testimonial.name}</div>
+                  <div className="text-blue-200">{testimonial.role}</div>
+                </div>
+              </motion.div>
+            ))}
+          </div>
+
+          {/* FAQ */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="mt-20"
           >
-            Read our docs
-          </a>
+            <h3 className="text-3xl font-bold text-gray-900 text-center mb-12">
+              Frequently Asked Questions
+            </h3>
+            <div className="space-y-6 max-w-4xl mx-auto">
+              {faqs.map((faq, index) => (
+                <motion.div
+                  key={index}
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: index * 0.1 }}
+                  className="bg-gray-50 p-6 rounded-xl"
+                >
+                  <h4 className="text-xl font-semibold text-gray-900 mb-3">
+                    {faq.question}
+                  </h4>
+                  <p className="text-gray-600">{faq.answer}</p>
+                </motion.div>
+              ))}
+            </div>
+          </motion.div>
         </div>
-      </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
+      </section>
+
+      {/* Trading Highlight */}
+      <TradingHighlight />
+
+      {/* Footer */}
+      <footer className="bg-[#060314] text-white py-12">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid md:grid-cols-4 gap-8">
+            <div>
+              <div className="flex items-center space-x-2 mb-4">
+                <div className="w-10 h-10 bg-gradient-to-r from-blue-500 to-blue-600 rounded-lg flex items-center justify-center">
+                  <span className="text-white font-bold text-xl">N</span>
+                </div>
+                <span className="text-2xl font-bold text-white">Nextrade</span>
+              </div>
+              <p className="text-gray-400 mb-4">
+                Revolutionizing trading with AI-powered solutions trusted by
+                professionals worldwide.
+              </p>
+            </div>
+
+            <div>
+              <h4 className="text-lg font-semibold mb-4">Services</h4>
+              <ul className="space-y-2 text-gray-400">
+                <li>
+                  <a href="#" className="hover:text-white transition-colors">
+                    Algorithmic Trading
+                  </a>
+                </li>
+                <li>
+                  <a href="#" className="hover:text-white transition-colors">
+                    Market Analytics
+                  </a>
+                </li>
+                <li>
+                  <a href="#" className="hover:text-white transition-colors">
+                    Risk Management
+                  </a>
+                </li>
+                <li>
+                  <a href="#" className="hover:text-white transition-colors">
+                    Portfolio Optimization
+                  </a>
+                </li>
+              </ul>
+            </div>
+
+            <div>
+              <h4 className="text-lg font-semibold mb-4">Company</h4>
+              <ul className="space-y-2 text-gray-400">
+                <li>
+                  <a href="#" className="hover:text-white transition-colors">
+                    About Us
+                  </a>
+                </li>
+                <li>
+                  <a href="#" className="hover:text-white transition-colors">
+                    Careers
+                  </a>
+                </li>
+                <li>
+                  <a href="#" className="hover:text-white transition-colors">
+                    Press
+                  </a>
+                </li>
+                <li>
+                  <a href="#" className="hover:text-white transition-colors">
+                    Contact
+                  </a>
+                </li>
+              </ul>
+            </div>
+
+            <div>
+              <h4 className="text-lg font-semibold mb-4">Legal</h4>
+              <ul className="space-y-2 text-gray-400">
+                <li>
+                  <a href="#" className="hover:text-white transition-colors">
+                    Privacy Policy
+                  </a>
+                </li>
+                <li>
+                  <a href="#" className="hover:text-white transition-colors">
+                    Terms of Service
+                  </a>
+                </li>
+                <li>
+                  <a href="#" className="hover:text-white transition-colors">
+                    Security
+                  </a>
+                </li>
+                <li>
+                  <a href="#" className="hover:text-white transition-colors">
+                    Compliance
+                  </a>
+                </li>
+              </ul>
+            </div>
+          </div>
+
+          <div className="border-t border-gray-800 mt-8 pt-8 text-center text-gray-400">
+            <p>&copy; 2025 Nextrade. All rights reserved.</p>
+          </div>
+        </div>
       </footer>
     </div>
   );
-}
+};
+
+export default Home;
