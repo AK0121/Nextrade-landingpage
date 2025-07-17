@@ -4,7 +4,6 @@ import {
   motion,
 } from "framer-motion";
 import {
-  CheckCircle,
   Star,
   Award, 
   Clock,
@@ -52,7 +51,7 @@ const Home = () => {
       name: "Michael Chen",
       role: "Investment Director, Capital Ventures",
       content:
-        "The most reliable trading platform we've ever used. Exceptional support team.",
+        "The most reliable trading platform weve ever used. Exceptional support team.",
       rating: 5,
     },
   ];
@@ -144,7 +143,7 @@ const Home = () => {
                     />
                   ))}
                 </div>
-                <p className="text-lg mb-4 italic">"{testimonial.content}"</p>
+                <p className="text-lg mb-4 italic">&quot;{testimonial.content}&quot;</p>
                 <div>
                   <div className="font-semibold">{testimonial.name}</div>
                   <div className="text-blue-200">{testimonial.role}</div>

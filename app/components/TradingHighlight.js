@@ -65,7 +65,7 @@ const TradingHighlight = () => {
             </div>
 
             <p className="text-lg text-gray-300 leading-relaxed">
-              Dive into crystal-clear visuals of real-time trading trends with powerful AI insights. Nextrade helps you spot opportunities fast — whether you're a seasoned trader or just starting out.
+              Dive into crystal-clear visuals of real-time trading trends with powerful AI insights. Nextrade helps you spot opportunities fast — whether you&apos;re a seasoned trader or just starting out.
             </p>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">

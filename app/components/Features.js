@@ -127,7 +127,7 @@ const ResultsSection = () => {
               Ready to Maximize Your Profits?
             </h3>
             <p className="text-xl mb-8 text-blue-100">
-              Join thousands of traders who've already switched to zero
+              Join thousands of traders who&apos;ve already switched to zero
               brokerage trading
             </p>
 

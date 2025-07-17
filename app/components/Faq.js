@@ -70,7 +70,7 @@ const FAQ = () => {
             Frequently Asked Questions
           </h2>
           <p className="text-xl text-slate-600 max-w-2xl mx-auto">
-            Get answers to common questions about Nextrade's revolutionary
+            Get answers to common questions about Nextrade&apos;s revolutionary
             trading platform
           </p>
         </motion.div>
