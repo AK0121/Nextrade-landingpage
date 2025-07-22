@@ -1,52 +1,52 @@
-'use client';
+"use client";
 
-import { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { 
-  Trash2, 
-  Phone, 
-  Mail, 
-  Calendar, 
-  Users, 
-  TrendingUp, 
+import { useState, useEffect } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import {
+  Trash2,
+  Phone,
+  Mail,
+  Calendar,
+  Users,
+  TrendingUp,
   Filter,
   Search,
   Download,
   RefreshCw,
   Eye,
   ExternalLink,
-  AlertCircle
-} from 'lucide-react';
-import { supabase } from '@/lib/supabase';
-
+  AlertCircle,
+} from "lucide-react";
+import { supabase } from "@/lib/supabase";
+import ConfirmModal from "./ConfirmModal";
 
 export default function AdminDashboard({ userEmail }) {
   const [leads, setLeads] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [searchTerm, setSearchTerm] = useState('');
-  const [statusFilter, setStatusFilter] = useState('all');
+  const [searchTerm, setSearchTerm] = useState("");
   const [selectedLead, setSelectedLead] = useState(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [leadToDelete, setLeadToDelete] = useState(null);
   const [stats, setStats] = useState({
     total: 0,
     thisWeek: 0,
     thisMonth: 0,
-    conversionRate: 0
   });
 
   const fetchLeads = async () => {
     setLoading(true);
     try {
       const { data, error } = await supabase
-        .from('nextrade_leads')
-        .select('*')
-        .order('created_at', { ascending: false });
+        .from("nextrade_leads")
+        .select("*")
+        .order("created_at", { ascending: false });
 
       if (error) throw error;
 
       setLeads(data || []);
       calculateStats(data || []);
     } catch (error) {
-      console.error('Error fetching leads:', error);
+      console.error("Error fetching leads:", error);
     } finally {
       setLoading(false);
     }
@@ -57,79 +57,69 @@ export default function AdminDashboard({ userEmail }) {
     const weekAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
     const monthAgo = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
 
-    const thisWeek = leadsData.filter(lead => new Date(lead.created_at) > weekAgo).length;
-    const thisMonth = leadsData.filter(lead => new Date(lead.created_at) > monthAgo).length;
-    const qualified = leadsData.filter(lead => lead.status === 'qualified' || lead.status === 'closed').length;
+    const thisWeek = leadsData.filter(
+      (lead) => new Date(lead.created_at) > weekAgo
+    ).length;
+    const thisMonth = leadsData.filter(
+      (lead) => new Date(lead.created_at) > monthAgo
+    ).length;
 
     setStats({
       total: leadsData.length,
       thisWeek,
       thisMonth,
-      conversionRate: leadsData.length > 0 ? Math.round((qualified / leadsData.length) * 100) : 0
     });
   };
 
-  const deleteLead = async (id) => {
-    try {
-      const { error } = await supabase
-        .from('nextrade_leads')
-        .delete()
-        .eq('id', id);
-
-      if (error) throw error;
-
-      setLeads(leads.filter(lead => lead.id !== id));
-      calculateStats(leads.filter(lead => lead.id !== id));
-    } catch (error) {
-      console.error('Error deleting lead:', error);
-    }
+  const confirmDelete = (id) => {
+    setLeadToDelete(id);
+    setIsModalOpen(true);
   };
 
-  const updateLeadStatus = async (id, status) => {
+  const deleteLead = async () => {
     try {
       const { error } = await supabase
-        .from('nextrade_leads')
-        .update({ status })
-        .eq('id', id);
+        .from("nextrade_leads")
+        .delete()
+        .eq("id", leadToDelete);
 
       if (error) throw error;
 
-      const updatedLeads = leads.map(lead => 
-        lead.id === id ? { ...lead, status } : lead
-      );
+      const updatedLeads = leads.filter((lead) => lead.id !== leadToDelete);
       setLeads(updatedLeads);
       calculateStats(updatedLeads);
+      setIsModalOpen(false);
+      setLeadToDelete(null);
     } catch (error) {
-      console.error('Error updating lead status:', error);
+      console.error("Error deleting lead:", error);
     }
   };
 
-  const filteredLeads = leads.filter(lead => {
-    const matchesSearch = lead.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         lead.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         lead.company?.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesStatus = statusFilter === 'all' || lead.status === statusFilter;
-    return matchesSearch && matchesStatus;
+  const filteredLeads = leads.filter((lead) => {
+    const matchesSearch =
+      lead.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      lead.email.toLowerCase().includes(searchTerm.toLowerCase());
+    return matchesSearch;
   });
 
   const exportToCSV = () => {
     const csvContent = [
-      ['Name', 'Email', 'Phone', 'Company', 'Status', 'Created At'],
-      ...filteredLeads.map(lead => [
+      ["Name", "Email", "Phone", "Created At"],
+      ...filteredLeads.map((lead) => [
         lead.name,
         lead.email,
         lead.phone,
-        lead.company || '',
-        lead.status || 'new',
-        new Date(lead.created_at).toLocaleDateString()
-      ])
-    ].map(row => row.join(',')).join('\n');
+        new Date(lead.created_at).toLocaleDateString(),
+      ]),
+    ]
+      .map((row) => row.join(","))
+      .join("\n");
 
-    const blob = new Blob([csvContent], { type: 'text/csv' });
+    const blob = new Blob([csvContent], { type: "text/csv" });
     const url = window.URL.createObjectURL(blob);
-    const a = document.createElement('a');
+    const a = document.createElement("a");
     a.href = url;
-    a.download = `nextrade-leads-${new Date().toISOString().split('T')[0]}.csv`;
+    a.download = `nextrade-leads-${new Date().toISOString().split("T")[0]}.csv`;
     a.click();
   };
 
@@ -137,21 +127,11 @@ export default function AdminDashboard({ userEmail }) {
     fetchLeads();
   }, []);
 
-  const getStatusColor = (status) => {
-    switch (status) {
-      case 'new': return 'bg-blue-100 text-blue-800 border-blue-200';
-      case 'contacted': return 'bg-yellow-100 text-yellow-800 border-yellow-200';
-      case 'qualified': return 'bg-green-100 text-green-800 border-green-200';
-      case 'closed': return 'bg-gray-100 text-gray-800 border-gray-200';
-      default: return 'bg-blue-100 text-blue-800 border-blue-200';
-    }
-  };
-
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 p-6">
       <div className="max-w-7xl mx-auto space-y-6">
         {/* Header */}
-        <motion.div 
+        <motion.div
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
           className="flex justify-between items-center"
@@ -179,7 +159,7 @@ export default function AdminDashboard({ userEmail }) {
         </motion.div>
 
         {/* Stats Cards */}
-        <motion.div 
+        <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.1 }}
@@ -189,45 +169,41 @@ export default function AdminDashboard({ userEmail }) {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm text-gray-600">Total Leads</p>
-                <p className="text-3xl font-bold text-gray-900">{stats.total}</p>
+                <p className="text-3xl font-bold text-gray-900">
+                  {stats.total}
+                </p>
               </div>
               <Users className="w-12 h-12 text-indigo-600" />
             </div>
           </div>
-          
+
           <div className="bg-white p-6 rounded-xl shadow-sm border">
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm text-gray-600">This Week</p>
-                <p className="text-3xl font-bold text-gray-900">{stats.thisWeek}</p>
+                <p className="text-3xl font-bold text-gray-900">
+                  {stats.thisWeek}
+                </p>
               </div>
               <Calendar className="w-12 h-12 text-green-600" />
             </div>
           </div>
-          
+
           <div className="bg-white p-6 rounded-xl shadow-sm border">
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm text-gray-600">This Month</p>
-                <p className="text-3xl font-bold text-gray-900">{stats.thisMonth}</p>
+                <p className="text-3xl font-bold text-gray-900">
+                  {stats.thisMonth}
+                </p>
               </div>
               <TrendingUp className="w-12 h-12 text-blue-600" />
-            </div>
-          </div>
-          
-          <div className="bg-white p-6 rounded-xl shadow-sm border">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-gray-600">Conversion</p>
-                <p className="text-3xl font-bold text-gray-900">{stats.conversionRate}%</p>
-              </div>
-              <TrendingUp className="w-12 h-12 text-purple-600" />
             </div>
           </div>
         </motion.div>
 
         {/* Filters */}
-        <motion.div 
+        <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.2 }}
@@ -248,23 +224,15 @@ export default function AdminDashboard({ userEmail }) {
             </div>
             <div className="flex items-center gap-2">
               <Filter className="w-4 h-4 text-gray-400" />
-              <select
-                value={statusFilter}
-                onChange={(e) => setStatusFilter(e.target.value)}
-                className="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
-              >
-                <option value="all">All Status</option>
-                <option value="new">New</option>
-                <option value="contacted">Contacted</option>
-                <option value="qualified">Qualified</option>
-                <option value="closed">Closed</option>
-              </select>
+              <button className="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent">
+                All Status
+              </button>
             </div>
           </div>
         </motion.div>
 
         {/* Leads Table */}
-        <motion.div 
+        <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.3 }}
@@ -286,12 +254,18 @@ export default function AdminDashboard({ userEmail }) {
               <table className="w-full">
                 <thead className="bg-gray-50 border-b">
                   <tr>
-                    <th className="text-left py-4 px-6 font-medium text-gray-900">Name</th>
-                    <th className="text-left py-4 px-6 font-medium text-gray-900">Contact</th>
-                    <th className="text-left py-4 px-6 font-medium text-gray-900">Company</th>
-                    <th className="text-left py-4 px-6 font-medium text-gray-900">Status</th>
-                    <th className="text-left py-4 px-6 font-medium text-gray-900">Date</th>
-                    <th className="text-left py-4 px-6 font-medium text-gray-900">Actions</th>
+                    <th className="text-left py-4 px-6 font-medium text-gray-900">
+                      Name
+                    </th>
+                    <th className="text-left py-4 px-6 font-medium text-gray-900">
+                      Contact
+                    </th>
+                    <th className="text-left py-4 px-6 font-medium text-gray-900">
+                      Date
+                    </th>
+                    <th className="text-left py-4 px-6 font-medium text-gray-900">
+                      Actions
+                    </th>
                   </tr>
                 </thead>
                 <tbody>
@@ -306,7 +280,9 @@ export default function AdminDashboard({ userEmail }) {
                         className="border-b hover:bg-gray-50 transition-colors"
                       >
                         <td className="py-4 px-6">
-                          <div className="font-medium text-gray-900">{lead.name}</div>
+                          <div className="font-medium text-gray-900">
+                            {lead.name}
+                          </div>
                         </td>
                         <td className="py-4 px-6">
                           <div className="space-y-1">
@@ -329,21 +305,6 @@ export default function AdminDashboard({ userEmail }) {
                           </div>
                         </td>
                         <td className="py-4 px-6">
-                          <span className="text-gray-600">{lead.company || 'N/A'}</span>
-                        </td>
-                        <td className="py-4 px-6">
-                          <select
-                            value={lead.status || 'new'}
-                            onChange={(e) => updateLeadStatus(lead.id, e.target.value)}
-                            className={`px-3 py-1 rounded-full text-xs font-medium border ${getStatusColor(lead.status)}`}
-                          >
-                            <option value="new">New</option>
-                            <option value="contacted">Contacted</option>
-                            <option value="qualified">Qualified</option>
-                            <option value="closed">Closed</option>
-                          </select>
-                        </td>
-                        <td className="py-4 px-6">
                           <span className="text-gray-600">
                             {new Date(lead.created_at).toLocaleDateString()}
                           </span>
@@ -357,11 +318,16 @@ export default function AdminDashboard({ userEmail }) {
                               <Eye className="w-4 h-4" />
                             </button>
                             <button
-                              onClick={() => deleteLead(lead.id)}
+                              onClick={() => confirmDelete(lead.id)}
                               className="p-2 text-gray-600 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
                             >
                               <Trash2 className="w-4 h-4" />
                             </button>
+                            <ConfirmModal
+                              isOpen={isModalOpen}
+                              onClose={() => setIsModalOpen(false)}
+                              onConfirm={deleteLead}
+                            />
                           </div>
                         </td>
                       </motion.tr>
@@ -392,14 +358,18 @@ export default function AdminDashboard({ userEmail }) {
               className="bg-white rounded-xl shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto"
             >
               <div className="p-6 border-b">
-                <h3 className="text-2xl font-bold text-gray-900">{selectedLead.name}</h3>
+                <h3 className="text-2xl font-bold text-gray-900">
+                  {selectedLead.name}
+                </h3>
                 <p className="text-gray-600">Lead Details</p>
               </div>
-              
+
               <div className="p-6 space-y-6">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">Email</label>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Email
+                    </label>
                     <a
                       href={`mailto:${selectedLead.email}`}
                       className="flex items-center gap-2 text-indigo-600 hover:text-indigo-800 transition-colors"
@@ -409,9 +379,11 @@ export default function AdminDashboard({ userEmail }) {
                       <ExternalLink className="w-4 h-4" />
                     </a>
                   </div>
-                  
+
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">Phone</label>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Phone
+                    </label>
                     <a
                       href={`tel:${selectedLead.phone}`}
                       className="flex items-center gap-2 text-green-600 hover:text-green-800 transition-colors"
@@ -421,40 +393,38 @@ export default function AdminDashboard({ userEmail }) {
                       <ExternalLink className="w-4 h-4" />
                     </a>
                   </div>
-                  
+
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">Company</label>
-                    <p className="text-gray-900">{selectedLead.company || 'N/A'}</p>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Source
+                    </label>
+                    <p className="text-gray-900">
+                      {selectedLead.source || "Direct"}
+                    </p>
                   </div>
-                  
+
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">Status</label>
-                    <span className={`px-3 py-1 rounded-full text-xs font-medium border ${getStatusColor(selectedLead.status)}`}>
-                      {selectedLead.status || 'new'}
-                    </span>
-                  </div>
-                  
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">Source</label>
-                    <p className="text-gray-900">{selectedLead.source || 'Direct'}</p>
-                  </div>
-                  
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">Date Submitted</label>
-                    <p className="text-gray-900">{new Date(selectedLead.created_at).toLocaleString()}</p>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Date Submitted
+                    </label>
+                    <p className="text-gray-900">
+                      {new Date(selectedLead.created_at).toLocaleString()}
+                    </p>
                   </div>
                 </div>
-                
+
                 {selectedLead.message && (
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">Message</label>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Message
+                    </label>
                     <div className="bg-gray-50 p-4 rounded-lg">
                       <p className="text-gray-900">{selectedLead.message}</p>
                     </div>
                   </div>
                 )}
               </div>
-              
+
               <div className="p-6 border-t bg-gray-50 flex justify-end gap-3">
                 <button
                   onClick={() => setSelectedLead(null)}
