@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   Trash2,
@@ -33,16 +33,16 @@ export default function AdminDashboard({ userEmail }) {
     thisMonth: 0,
   });
 
-  const fetchLeads = async () => {
+  const fetchLeads = useCallback(async () => {
     setLoading(true);
     try {
       const { data, error } = await supabase
         .from("nextrade_leads")
         .select("*")
         .order("created_at", { ascending: false });
-
+  
       if (error) throw error;
-
+  
       setLeads(data || []);
       calculateStats(data || []);
     } catch (error) {
@@ -50,7 +50,7 @@ export default function AdminDashboard({ userEmail }) {
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
 
   const calculateStats = (leadsData) => {
     const now = new Date();
