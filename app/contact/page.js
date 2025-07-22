@@ -179,7 +179,7 @@ export default function Contact() {
                 </div>
                 <div className="flex items-center space-x-4">
                   <MapPin className="w-6 h-6 text-blue-200" />
-                  <span className="text-white">India, Rajasthan</span>
+                  <span className="text-white">India, Mumbai</span>
                 </div>
               </div>
             </div>
