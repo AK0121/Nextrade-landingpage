@@ -10,7 +10,7 @@ const supabase = createClient(
 // 👤 User details
 const name = "Admin";
 const email = "admin@nextrade.com";
-const password = "rahul8888";
+const password = "nextrade8888";
 
 async function createUser() {
   try {
