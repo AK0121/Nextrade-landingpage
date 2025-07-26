@@ -9,13 +9,13 @@ import {
   Calendar,
   Users,
   TrendingUp,
-  Filter,
   Search,
   Download,
   RefreshCw,
   Eye,
   ExternalLink,
-  AlertCircle,
+  X,
+  MoreVertical,
 } from "lucide-react";
 import { supabase } from "@/lib/supabase";
 import ConfirmModal from "./ConfirmModal";
@@ -40,9 +40,9 @@ export default function AdminDashboard({ userEmail }) {
         .from("nextrade_leads")
         .select("*")
         .order("created_at", { ascending: false });
-  
+
       if (error) throw error;
-  
+
       setLeads(data || []);
       calculateStats(data || []);
     } catch (error) {
@@ -104,11 +104,12 @@ export default function AdminDashboard({ userEmail }) {
 
   const exportToCSV = () => {
     const csvContent = [
-      ["Name", "Email", "Phone", "Created At"],
+      ["Name", "Email", "Phone", "Message", "Created At"],
       ...filteredLeads.map((lead) => [
         lead.name,
         lead.email,
         lead.phone,
+        lead.message,
         new Date(lead.created_at).toLocaleDateString(),
       ]),
     ]
@@ -125,109 +126,116 @@ export default function AdminDashboard({ userEmail }) {
 
   useEffect(() => {
     fetchLeads();
-  }, []);
+  }, [fetchLeads]);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 p-6">
-      <div className="max-w-7xl mx-auto space-y-6">
-        {/* Header */}
-        <motion.div
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="flex justify-between items-center"
-        >
-          <div>
-            <h1 className="text-3xl font-bold text-gray-900">Nextrade Admin</h1>
-            <p className="text-gray-600">Welcome back, {userEmail}</p>
+    <div className="min-h-screen bg-gray-50">
+      {/* Header */}
+      <div className="bg-white border-b border-gray-200">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex items-center justify-between h-16">
+            <div className="flex items-center gap-4">
+              <div className="w-8 h-8 bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg flex items-center justify-center">
+                <span className="text-white font-bold text-sm">NT</span>
+              </div>
+              <div>
+                <h1 className="text-lg font-semibold text-gray-900">Nextrade</h1>
+                <p className="text-xs text-gray-500">Admin Dashboard</p>
+              </div>
+            </div>
+            
+            <div className="flex items-center gap-3">
+              <button
+                onClick={fetchLeads}
+                className="flex items-center gap-2 px-3 py-1.5 text-sm text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              >
+                <RefreshCw className="w-4 h-4" />
+                Refresh
+              </button>
+              <button 
+                onClick={exportToCSV}
+                className="flex items-center gap-2 px-3 py-1.5 text-sm text-white bg-blue-600 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              >
+                <Download className="w-4 h-4" />
+                Export
+              </button>
+            </div>
           </div>
-          <div className="flex gap-3">
-            <button
-              onClick={fetchLeads}
-              className="flex items-center gap-2 px-4 py-2 bg-white rounded-lg shadow-sm border hover:shadow-md transition-shadow"
-            >
-              <RefreshCw className="w-4 h-4" />
-              Refresh
-            </button>
-            <button
-              onClick={exportToCSV}
-              className="flex items-center gap-2 px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors"
-            >
-              <Download className="w-4 h-4" />
-              Export CSV
-            </button>
+        </div>
+      </div>
+
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        {/* Welcome Message */}
+        <motion.div
+          initial={{ opacity: 0, y: -10 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="mb-8"
+        >
+          <h2 className="text-2xl font-semibold text-gray-900">
+            Welcome back, {userEmail?.split('@')[0]}
+          </h2>
+          <p className="text-gray-600 mt-1">Here's what's happening with your leads today.</p>
+        </motion.div>
+
+        {/* Stats Grid */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8"
+        >
+          <div className="bg-white rounded-lg border border-gray-200 p-5">
+            <div className="flex items-center">
+              <div className="flex-shrink-0">
+                <Users className="w-5 h-5 text-blue-600" />
+              </div>
+              <div className="ml-4">
+                <p className="text-sm font-medium text-gray-500">Total Leads</p>
+                <p className="text-2xl font-semibold text-gray-900">{stats.total}</p>
+              </div>
+            </div>
+          </div>
+
+          <div className="bg-white rounded-lg border border-gray-200 p-5">
+            <div className="flex items-center">
+              <div className="flex-shrink-0">
+                <Calendar className="w-5 h-5 text-green-600" />
+              </div>
+              <div className="ml-4">
+                <p className="text-sm font-medium text-gray-500">This Week</p>
+                <p className="text-2xl font-semibold text-gray-900">{stats.thisWeek}</p>
+              </div>
+            </div>
+          </div>
+
+          <div className="bg-white rounded-lg border border-gray-200 p-5">
+            <div className="flex items-center">
+              <div className="flex-shrink-0">
+                <TrendingUp className="w-5 h-5 text-purple-600" />
+              </div>
+              <div className="ml-4">
+                <p className="text-sm font-medium text-gray-500">This Month</p>
+                <p className="text-2xl font-semibold text-gray-900">{stats.thisMonth}</p>
+              </div>
+            </div>
           </div>
         </motion.div>
 
-        {/* Stats Cards */}
+        {/* Search */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.1 }}
-          className="grid grid-cols-1 md:grid-cols-4 gap-6"
+          className="mb-6"
         >
-          <div className="bg-white p-6 rounded-xl shadow-sm border">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-gray-600">Total Leads</p>
-                <p className="text-3xl font-bold text-gray-900">
-                  {stats.total}
-                </p>
-              </div>
-              <Users className="w-12 h-12 text-indigo-600" />
-            </div>
-          </div>
-
-          <div className="bg-white p-6 rounded-xl shadow-sm border">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-gray-600">This Week</p>
-                <p className="text-3xl font-bold text-gray-900">
-                  {stats.thisWeek}
-                </p>
-              </div>
-              <Calendar className="w-12 h-12 text-green-600" />
-            </div>
-          </div>
-
-          <div className="bg-white p-6 rounded-xl shadow-sm border">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-gray-600">This Month</p>
-                <p className="text-3xl font-bold text-gray-900">
-                  {stats.thisMonth}
-                </p>
-              </div>
-              <TrendingUp className="w-12 h-12 text-blue-600" />
-            </div>
-          </div>
-        </motion.div>
-
-        {/* Filters */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.2 }}
-          className="bg-white p-6 rounded-xl shadow-sm border"
-        >
-          <div className="flex flex-col sm:flex-row gap-4">
-            <div className="flex-1">
-              <div className="relative">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
-                <input
-                  type="text"
-                  placeholder="Search leads..."
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                  className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
-                />
-              </div>
-            </div>
-            <div className="flex items-center gap-2">
-              <Filter className="w-4 h-4 text-gray-400" />
-              <button className="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent">
-                All Status
-              </button>
-            </div>
+          <div className="relative max-w-md">
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
+            <input
+              type="text"
+              placeholder="Search leads..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm"
+            />
           </div>
         </motion.div>
 
@@ -235,99 +243,97 @@ export default function AdminDashboard({ userEmail }) {
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.3 }}
-          className="bg-white rounded-xl shadow-sm border overflow-hidden"
+          transition={{ delay: 0.2 }}
+          className="bg-white rounded-lg border border-gray-200 overflow-hidden"
         >
-          <div className="overflow-x-auto">
-            {loading ? (
-              <div className="flex items-center justify-center h-64">
-                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600"></div>
-              </div>
-            ) : filteredLeads.length === 0 ? (
-              <div className="flex items-center justify-center h-64 text-gray-500">
-                <div className="text-center">
-                  <AlertCircle className="w-12 h-12 mx-auto mb-4 text-gray-300" />
-                  <p>No leads found</p>
-                </div>
-              </div>
-            ) : (
-              <table className="w-full">
-                <thead className="bg-gray-50 border-b">
+          {loading ? (
+            <div className="flex items-center justify-center h-64">
+              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+            </div>
+          ) : filteredLeads.length === 0 ? (
+            <div className="text-center py-12">
+              <Users className="w-12 h-12 text-gray-300 mx-auto mb-4" />
+              <p className="text-gray-500">No leads found</p>
+            </div>
+          ) : (
+            <div className="overflow-x-auto">
+              <table className="min-w-full divide-y divide-gray-200">
+                <thead className="bg-gray-50">
                   <tr>
-                    <th className="text-left py-4 px-6 font-medium text-gray-900">
-                      Name
-                    </th>
-                    <th className="text-left py-4 px-6 font-medium text-gray-900">
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                       Contact
                     </th>
-                    <th className="text-left py-4 px-6 font-medium text-gray-900">
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      Message
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                       Date
                     </th>
-                    <th className="text-left py-4 px-6 font-medium text-gray-900">
-                      Actions
+                    <th className="relative px-6 py-3">
+                      <span className="sr-only">Actions</span>
                     </th>
                   </tr>
                 </thead>
-                <tbody>
+                <tbody className="bg-white divide-y divide-gray-200">
                   <AnimatePresence>
                     {filteredLeads.map((lead, index) => (
                       <motion.tr
                         key={lead.id}
-                        initial={{ opacity: 0, x: -20 }}
-                        animate={{ opacity: 1, x: 0 }}
-                        exit={{ opacity: 0, x: 20 }}
-                        transition={{ delay: index * 0.05 }}
-                        className="border-b hover:bg-gray-50 transition-colors"
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        transition={{ delay: index * 0.02 }}
+                        className="hover:bg-gray-50"
                       >
-                        <td className="py-4 px-6">
-                          <div className="font-medium text-gray-900">
-                            {lead.name}
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          <div>
+                            <div className="text-sm font-medium text-gray-900">
+                              {lead.name}
+                            </div>
+                            <div className="text-sm text-gray-500 space-y-1 mt-1">
+                              <div className="flex items-center gap-1">
+                                <Mail className="w-3 h-3" />
+                                <a
+                                  href={`mailto:${lead.email}`}
+                                  className="hover:text-blue-600"
+                                >
+                                  {lead.email}
+                                </a>
+                              </div>
+                              <div className="flex items-center gap-1">
+                                <Phone className="w-3 h-3" />
+                                <a
+                                  href={`tel:${lead.phone}`}
+                                  className="hover:text-green-600"
+                                >
+                                  {lead.phone}
+                                </a>
+                              </div>
+                            </div>
                           </div>
                         </td>
-                        <td className="py-4 px-6">
-                          <div className="space-y-1">
-                            <a
-                              href={`mailto:${lead.email}`}
-                              className="flex items-center gap-2 text-indigo-600 hover:text-indigo-800 transition-colors"
-                            >
-                              <Mail className="w-4 h-4" />
-                              {lead.email}
-                              <ExternalLink className="w-3 h-3" />
-                            </a>
-                            <a
-                              href={`tel:${lead.phone}`}
-                              className="flex items-center gap-2 text-green-600 hover:text-green-800 transition-colors"
-                            >
-                              <Phone className="w-4 h-4" />
-                              {lead.phone}
-                              <ExternalLink className="w-3 h-3" />
-                            </a>
+                        <td className="px-6 py-4">
+                          <div className="text-sm text-gray-900 max-w-xs truncate">
+                            {lead.message}
                           </div>
                         </td>
-                        <td className="py-4 px-6">
-                          <span className="text-gray-600">
-                            {new Date(lead.created_at).toLocaleDateString()}
-                          </span>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                          {new Date(lead.created_at).toLocaleDateString()}
                         </td>
-                        <td className="py-4 px-6">
+                        <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                           <div className="flex items-center gap-2">
                             <button
                               onClick={() => setSelectedLead(lead)}
-                              className="p-2 text-gray-600 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition-colors"
+                              className="text-blue-600 cursor-pointer hover:text-blue-900 p-1 rounded"
                             >
                               <Eye className="w-4 h-4" />
                             </button>
                             <button
                               onClick={() => confirmDelete(lead.id)}
-                              className="p-2 text-gray-600 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                              className="text-red-600 cursor-pointer hover:text-red-900 p-1 rounded"
                             >
                               <Trash2 className="w-4 h-4" />
                             </button>
-                            <ConfirmModal
-                              isOpen={isModalOpen}
-                              onClose={() => setIsModalOpen(false)}
-                              onConfirm={deleteLead}
-                            />
                           </div>
                         </td>
                       </motion.tr>
@@ -335,8 +341,8 @@ export default function AdminDashboard({ userEmail }) {
                   </AnimatePresence>
                 </tbody>
               </table>
-            )}
-          </div>
+            </div>
+          )}
         </motion.div>
       </div>
 
@@ -347,36 +353,47 @@ export default function AdminDashboard({ userEmail }) {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50"
+            className="fixed inset-0 bg-gray-500 bg-opacity-50 flex items-center justify-center p-4 z-50"
             onClick={() => setSelectedLead(null)}
           >
             <motion.div
-              initial={{ scale: 0.95, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              exit={{ scale: 0.95, opacity: 0 }}
+              initial={{ scale: 0.95 }}
+              animate={{ scale: 1 }}
+              exit={{ scale: 0.95 }}
               onClick={(e) => e.stopPropagation()}
-              className="bg-white rounded-xl shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto"
+              className="bg-white rounded-lg shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto"
             >
-              <div className="p-6 border-b">
-                <h3 className="text-2xl font-bold text-gray-900">
-                  {selectedLead.name}
+              <div className="flex items-center justify-between p-6 border-b border-gray-200">
+                <h3 className="text-lg font-medium text-gray-900">
+                  Lead Details
                 </h3>
-                <p className="text-gray-600">Lead Details</p>
+                <button
+                  onClick={() => setSelectedLead(null)}
+                  className="text-gray-400 cursor-pointer hover:text-gray-600"
+                >
+                  <X className="w-5 h-5" />
+                </button>
               </div>
 
               <div className="p-6 space-y-6">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Name
+                    </label>
+                    <p className="text-sm text-gray-900">{selectedLead.name}</p>
+                  </div>
+
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">
                       Email
                     </label>
                     <a
                       href={`mailto:${selectedLead.email}`}
-                      className="flex items-center gap-2 text-indigo-600 hover:text-indigo-800 transition-colors"
+                      className="text-sm text-blue-600 hover:text-blue-800 flex items-center gap-1"
                     >
-                      <Mail className="w-4 h-4" />
                       {selectedLead.email}
-                      <ExternalLink className="w-4 h-4" />
+                      <ExternalLink className="w-3 h-3" />
                     </a>
                   </div>
 
@@ -386,28 +403,18 @@ export default function AdminDashboard({ userEmail }) {
                     </label>
                     <a
                       href={`tel:${selectedLead.phone}`}
-                      className="flex items-center gap-2 text-green-600 hover:text-green-800 transition-colors"
+                      className="text-sm text-green-600 hover:text-green-800 flex items-center gap-1"
                     >
-                      <Phone className="w-4 h-4" />
                       {selectedLead.phone}
-                      <ExternalLink className="w-4 h-4" />
+                      <ExternalLink className="w-3 h-3" />
                     </a>
                   </div>
 
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Source
+                      Date
                     </label>
-                    <p className="text-gray-900">
-                      {selectedLead.source || "Direct"}
-                    </p>
-                  </div>
-
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Date Submitted
-                    </label>
-                    <p className="text-gray-900">
+                    <p className="text-sm text-gray-900">
                       {new Date(selectedLead.created_at).toLocaleString()}
                     </p>
                   </div>
@@ -418,34 +425,42 @@ export default function AdminDashboard({ userEmail }) {
                     <label className="block text-sm font-medium text-gray-700 mb-2">
                       Message
                     </label>
-                    <div className="bg-gray-50 p-4 rounded-lg">
-                      <p className="text-gray-900">{selectedLead.message}</p>
+                    <div className="bg-gray-50 rounded-lg p-4">
+                      <p className="text-sm text-gray-900 whitespace-pre-wrap">
+                        {selectedLead.message}
+                      </p>
                     </div>
                   </div>
                 )}
               </div>
 
-              <div className="p-6 border-t bg-gray-50 flex justify-end gap-3">
+              <div className="px-6 py-4 bg-gray-50 border-t border-gray-200 flex justify-end gap-3">
                 <button
                   onClick={() => setSelectedLead(null)}
-                  className="px-4 py-2 text-gray-600 border border-gray-300 rounded-lg hover:bg-gray-100 transition-colors"
+                  className="px-4 py-2 text-sm text-gray-700 cursor-pointer bg-white border border-gray-300 rounded-md hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500"
                 >
                   Close
                 </button>
                 <button
                   onClick={() => {
-                    deleteLead(selectedLead.id);
+                    confirmDelete(selectedLead.id);
                     setSelectedLead(null);
                   }}
-                  className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors"
+                  className="px-4 py-2 text-sm text-white cursor-pointer bg-red-600 rounded-md hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500"
                 >
-                  Delete Lead
+                  Delete
                 </button>
               </div>
             </motion.div>
           </motion.div>
         )}
       </AnimatePresence>
+
+      <ConfirmModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        onConfirm={deleteLead}
+      />
     </div>
   );
 }
