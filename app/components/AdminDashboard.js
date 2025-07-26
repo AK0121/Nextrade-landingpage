@@ -174,7 +174,7 @@ export default function AdminDashboard({ userEmail }) {
           <h2 className="text-2xl font-semibold text-gray-900">
             Welcome back, {userEmail?.split('@')[0]}
           </h2>
-          <p className="text-gray-600 mt-1">Here's what's happening with your leads today.</p>
+          <p className="text-gray-600 mt-1">Here&apos;s what&apos;s happening with your leads today.</p>
         </motion.div>
 
         {/* Stats Grid */}
@@ -304,7 +304,7 @@ export default function AdminDashboard({ userEmail }) {
                                 <Phone className="w-3 h-3" />
                                 <a
                                   href={`tel:${lead.phone}`}
-                                  className="hover:text-green-600"
+                                  className="hover:text-green-600 cursor-pointer"
                                 >
                                   {lead.phone}
                                 </a>
@@ -313,7 +313,7 @@ export default function AdminDashboard({ userEmail }) {
                           </div>
                         </td>
                         <td className="px-6 py-4">
-                          <div className="text-sm text-gray-900 max-w-xs truncate">
+                          <div className="text-sm text-gray-900 max-w-xs cursor-pointer">
                             {lead.message}
                           </div>
                         </td>
